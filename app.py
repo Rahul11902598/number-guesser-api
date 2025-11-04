@@ -1,5 +1,5 @@
 # app.py - Number Guesser Pro API
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from datetime import datetime
 import random
 import uuid
@@ -42,6 +42,12 @@ def get_hint(guess, target):
         return "close! " + ("too high" if guess > target else "too low")
     else:
         return "too high" if guess > target else "too low"
+
+# Web Routes
+@app.route('/')
+def index():
+    """Serve the main game page"""
+    return render_template('index.html')
 
 # API Endpoints
 

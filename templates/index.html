@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🕷️ Spider-Guesser | Number Guessing Game</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Spider-web background effect -->
+    <div class="web-background"></div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="game-header">
+            <div class="spider-logo">🕷️</div>
+            <h1 class="game-title">SPIDER-GUESSER</h1>
+            <p class="subtitle">With great guesses comes great scores!</p>
+        </header>
+
+        <!-- Game Setup Screen -->
+        <div id="setupScreen" class="screen active">
+            <div class="card">
+                <h2>🕸️ Start Your Mission</h2>
+                <form id="startGameForm">
+                    <div class="form-group">
+                        <label for="playerName">
+                            <span class="label-icon">🦸</span>
+                            Hero Name:
+                        </label>
+                        <input 
+                            type="text" 
+                            id="playerName" 
+                            placeholder="Enter your name..." 
+                            maxlength="20"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">⚡</span>
+                            Difficulty Level:
+                        </label>
+                        <div class="difficulty-buttons">
+                            <button type="button" class="difficulty-btn active" data-difficulty="easy">
+                                <span class="diff-emoji">😊</span>
+                                <span class="diff-name">Friendly</span>
+                                <span class="diff-range">1-50</span>
+                            </button>
+                            <button type="button" class="difficulty-btn" data-difficulty="medium">
+                                <span class="diff-emoji">😎</span>
+                                <span class="diff-name">Amazing</span>
+                                <span class="diff-range">1-100</span>
+                            </button>
+                            <button type="button" class="difficulty-btn" data-difficulty="hard">
+                                <span class="diff-emoji">🔥</span>
+                                <span class="diff-name">Ultimate</span>
+                                <span class="diff-range">1-200</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        🕸️ Start Mission
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Game Play Screen -->
+        <div id="gameScreen" class="screen">
+            <div class="card">
+                <div class="game-info">
+                    <div class="info-item">
+                        <span class="info-label">🦸 Hero:</span>
+                        <span id="displayPlayerName">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">⚡ Level:</span>
+                        <span id="displayDifficulty">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">🎯 Range:</span>
+                        <span id="displayRange">-</span>
+                    </div>
+                </div>
+
+                <div class="attempts-tracker">
+                    <span class="attempts-text">Web Shots Left:</span>
+                    <div class="web-shots">
+                        <span id="attemptsRemaining">0</span> / <span id="maxAttempts">0</span>
+                    </div>
+                </div>
+
+                <form id="guessForm">
+                    <div class="guess-input-group">
+                        <input 
+                            type="number" 
+                            id="guessInput" 
+                            placeholder="Enter your guess..."
+                            required
+                        >
+                        <button type="submit" class="btn btn-guess">
+                            🕸️ Shoot!
+                        </button>
+                    </div>
+                </form>
+
+                <div id="hintBox" class="hint-box hidden">
+                    <div class="hint-icon">🕷️</div>
+                    <div id="hintText" class="hint-text"></div>
+                </div>
+
+                <div id="guessList" class="guess-list"></div>
+            </div>
+        </div>
+
+        <!-- Game Result Screen -->
+        <div id="resultScreen" class="screen">
+            <div class="card result-card">
+                <div id="resultEmoji" class="result-emoji"></div>
+                <h2 id="resultTitle" class="result-title"></h2>
+                <div id="resultMessage" class="result-message"></div>
+                
+                <div id="scoreDisplay" class="score-display hidden">
+                    <div class="score-label">Final Score</div>
+                    <div id="finalScore" class="score-value">0</div>
+                </div>
+
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">🎯 Target Number:</span>
+                        <span id="targetNumber" class="stat-value">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">🕸️ Total Attempts:</span>
+                        <span id="totalAttempts" class="stat-value">-</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="restartGame()">
+                    🔄 New Mission
+                </button>
+            </div>
+        </div>
+
+        <!-- Leaderboard Toggle -->
+        <button class="leaderboard-toggle" onclick="toggleLeaderboard()">
+            🏆 Leaderboard
+        </button>
+
+        <!-- Leaderboard Popup -->
+        <div id="leaderboardPopup" class="popup hidden">
+            <div class="popup-content">
+                <button class="popup-close" onclick="toggleLeaderboard()">✖</button>
+                <h2>🏆 Hall of Heroes</h2>
+                <div id="leaderboardList" class="leaderboard-list">
+                    <div class="loading">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/game.js"></script>
+</body>
+</html>
