@@ -1,0 +1,570 @@
+{
+	"id": "a092b8c8-5b68-4722-8dda-1ad86cc5d188",
+	"name": "Spider-Guesser API",
+	"timestamp": "2025-11-04T20:17:59.473Z",
+	"collection_id": "49804069-a065c7e4-85a0-4d8b-ab30-d12c064dda61",
+	"folder_id": 0,
+	"environment_id": "49804069-49ee0e6d-9934-4f78-a9de-842e92326f03",
+	"totalPass": 33,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2025-11-04T20:17:57.767Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "57e51452-2476-4e87-b157-da6ddaf79013",
+			"name": "Health Check",
+			"url": "http://localhost:5000/health",
+			"time": 4,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Response has correct structure": true,
+				"Status is healthy": true,
+				"Response time is less than 200ms": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response has correct structure": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Status is healthy": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is less than 200ms": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Response has correct structure": true,
+					"Status is healthy": true,
+					"Response time is less than 200ms": true
+				}
+			]
+		},
+		{
+			"id": "6b8f6814-7dea-4195-b3cf-057f907ada27",
+			"name": "Start Game - Valid (Easy)",
+			"url": "http://localhost:5000/game/start",
+			"time": 4,
+			"responseCode": {
+				"code": 201,
+				"name": "CREATED"
+			},
+			"tests": {
+				"Status code is 201": true,
+				"Response has game_id": true,
+				"Response has correct difficulty": true,
+				"Max attempts is 10 for easy mode": true
+			},
+			"testPassFailCounts": {
+				"Status code is 201": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response has game_id": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response has correct difficulty": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Max attempts is 10 for easy mode": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Status code is 201": true,
+					"Response has game_id": true,
+					"Response has correct difficulty": true,
+					"Max attempts is 10 for easy mode": true
+				}
+			]
+		},
+		{
+			"id": "6b4bc708-3551-472d-b50e-0bb0cadbc986",
+			"name": "Start Game - Empty Player Name",
+			"url": "http://localhost:5000/game/start",
+			"time": 6,
+			"responseCode": {
+				"code": 400,
+				"name": "BAD REQUEST"
+			},
+			"tests": {
+				"Status code is 400": true,
+				"Error message is present": true
+			},
+			"testPassFailCounts": {
+				"Status code is 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error message is present": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				6
+			],
+			"allTests": [
+				{
+					"Status code is 400": true,
+					"Error message is present": true
+				}
+			]
+		},
+		{
+			"id": "d8cd940c-fd87-405b-88e4-72a09c141048",
+			"name": "Start Game - Long Player Name (25 chars)",
+			"url": "http://localhost:5000/game/start",
+			"time": 3,
+			"responseCode": {
+				"code": 400,
+				"name": "BAD REQUEST"
+			},
+			"tests": {
+				"Status code is 400 - validation working": true,
+				"Should reject or accept based on validation": true
+			},
+			"testPassFailCounts": {
+				"Status code is 400 - validation working": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Should reject or accept based on validation": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				3
+			],
+			"allTests": [
+				{
+					"Status code is 400 - validation working": true,
+					"Should reject or accept based on validation": true
+				}
+			]
+		},
+		{
+			"id": "bc79775a-2b05-43b1-a90a-7c63d995fb03",
+			"name": "Start Game - Invalid Difficulty",
+			"url": "http://localhost:5000/game/start",
+			"time": 3,
+			"responseCode": {
+				"code": 400,
+				"name": "BAD REQUEST"
+			},
+			"tests": {
+				"Status code is 400": true,
+				"Error mentions valid options": true
+			},
+			"testPassFailCounts": {
+				"Status code is 400": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error mentions valid options": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				3
+			],
+			"allTests": [
+				{
+					"Status code is 400": true,
+					"Error mentions valid options": true
+				}
+			]
+		},
+		{
+			"id": "7b09fcdc-ad2c-4df1-869c-80e069319031",
+			"name": "Start Game - XSS Attack",
+			"url": "http://localhost:5000/game/start",
+			"time": 4,
+			"responseCode": {
+				"code": 400,
+				"name": "BAD REQUEST"
+			},
+			"tests": {
+				"Game starts (documents behavior)": true
+			},
+			"testPassFailCounts": {
+				"Game starts (documents behavior)": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Game starts (documents behavior)": true
+				}
+			]
+		},
+		{
+			"id": "0d668709-0157-41cd-8b90-6c8f7d99507d",
+			"name": "Make Guess - Valid",
+			"url": "http://localhost:5000/game/4b328743-7bd2-4508-b5e6-e0af7df2853a/guess",
+			"time": 4,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Response has result field": true,
+				"Hint is provided": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response has result field": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Hint is provided": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Response has result field": true,
+					"Hint is provided": true
+				}
+			]
+		},
+		{
+			"id": "6cd377bf-47b1-4068-a328-ab2dce8dd704",
+			"name": "Make Guess - Non-Integer",
+			"url": "http://localhost:5000/game/4b328743-7bd2-4508-b5e6-e0af7df2853a/guess",
+			"time": 4,
+			"responseCode": {
+				"code": 400,
+				"name": "BAD REQUEST"
+			},
+			"tests": {
+				"Should return 400 for non-integer": true
+			},
+			"testPassFailCounts": {
+				"Should return 400 for non-integer": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Should return 400 for non-integer": true
+				}
+			]
+		},
+		{
+			"id": "00516498-0313-4d91-aa33-dffe5ff03148",
+			"name": "Make Guess - Negative Number",
+			"url": "http://localhost:5000/game/4b328743-7bd2-4508-b5e6-e0af7df2853a/guess",
+			"time": 4,
+			"responseCode": {
+				"code": 400,
+				"name": "BAD REQUEST"
+			},
+			"tests": {
+				"Should reject negative numbers": true,
+				"Error message mentions range": true
+			},
+			"testPassFailCounts": {
+				"Should reject negative numbers": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error message mentions range": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Should reject negative numbers": true,
+					"Error message mentions range": true
+				}
+			]
+		},
+		{
+			"id": "7ff400ac-3d09-4980-8444-822420adfd85",
+			"name": "Make Guess - Out of Range",
+			"url": "http://localhost:5000/game/4b328743-7bd2-4508-b5e6-e0af7df2853a/guess",
+			"time": 4,
+			"responseCode": {
+				"code": 400,
+				"name": "BAD REQUEST"
+			},
+			"tests": {
+				"Should reject out of range guess": true,
+				"Error specifies valid range": true
+			},
+			"testPassFailCounts": {
+				"Should reject out of range guess": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error specifies valid range": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Should reject out of range guess": true,
+					"Error specifies valid range": true
+				}
+			]
+		},
+		{
+			"id": "51b8855d-1d06-4e63-aeff-09b7082e4016",
+			"name": "Get Game Status",
+			"url": "http://localhost:5000/game/4b328743-7bd2-4508-b5e6-e0af7df2853a",
+			"time": 5,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Response has game details": true,
+				"Target number hidden for active games": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response has game details": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Target number hidden for active games": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				5
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Response has game details": true,
+					"Target number hidden for active games": true
+				}
+			]
+		},
+		{
+			"id": "1faa10c9-88e1-4818-869c-4d6a2ac96f91",
+			"name": "Get Game - Invalid ID",
+			"url": "http://localhost:5000/game/invalid-game-id-123",
+			"time": 4,
+			"responseCode": {
+				"code": 404,
+				"name": "NOT FOUND"
+			},
+			"tests": {
+				"Status code is 404": true,
+				"Error message says not found": true
+			},
+			"testPassFailCounts": {
+				"Status code is 404": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Error message says not found": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Status code is 404": true,
+					"Error message says not found": true
+				}
+			]
+		},
+		{
+			"id": "05c427b3-137c-4947-83d9-ddb0b111bb57",
+			"name": "Get Leaderboard",
+			"url": "http://localhost:5000/leaderboard",
+			"time": 4,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Response has leaderboard array": true,
+				"Response has total_games count": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response has leaderboard array": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response has total_games count": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Response has leaderboard array": true,
+					"Response has total_games count": true
+				}
+			]
+		},
+		{
+			"id": "963551e5-d255-4043-b53f-8257049ce699",
+			"name": "Get Stats",
+			"url": "http://localhost:5000/stats",
+			"time": 4,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code is 200": true,
+				"Stats include all metrics": true
+			},
+			"testPassFailCounts": {
+				"Status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Stats include all metrics": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				4
+			],
+			"allTests": [
+				{
+					"Status code is 200": true,
+					"Stats include all metrics": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 57,
+	"collection": {
+		"requests": [
+			{
+				"id": "57e51452-2476-4e87-b157-da6ddaf79013",
+				"method": "GET"
+			},
+			{
+				"id": "6b8f6814-7dea-4195-b3cf-057f907ada27",
+				"method": "POST"
+			},
+			{
+				"id": "6b4bc708-3551-472d-b50e-0bb0cadbc986",
+				"method": "POST"
+			},
+			{
+				"id": "d8cd940c-fd87-405b-88e4-72a09c141048",
+				"method": "POST"
+			},
+			{
+				"id": "bc79775a-2b05-43b1-a90a-7c63d995fb03",
+				"method": "POST"
+			},
+			{
+				"id": "7b09fcdc-ad2c-4df1-869c-80e069319031",
+				"method": "POST"
+			},
+			{
+				"id": "0d668709-0157-41cd-8b90-6c8f7d99507d",
+				"method": "POST"
+			},
+			{
+				"id": "6cd377bf-47b1-4068-a328-ab2dce8dd704",
+				"method": "POST"
+			},
+			{
+				"id": "00516498-0313-4d91-aa33-dffe5ff03148",
+				"method": "POST"
+			},
+			{
+				"id": "7ff400ac-3d09-4980-8444-822420adfd85",
+				"method": "POST"
+			},
+			{
+				"id": "51b8855d-1d06-4e63-aeff-09b7082e4016",
+				"method": "GET"
+			},
+			{
+				"id": "1faa10c9-88e1-4818-869c-4d6a2ac96f91",
+				"method": "GET"
+			},
+			{
+				"id": "05c427b3-137c-4947-83d9-ddb0b111bb57",
+				"method": "GET"
+			},
+			{
+				"id": "963551e5-d255-4043-b53f-8257049ce699",
+				"method": "GET"
+			}
+		]
+	}
+}

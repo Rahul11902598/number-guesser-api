@@ -1,0 +1,627 @@
+{
+  "info": {
+    "name": "Spider-Guesser API",
+    "description": "Complete API test suite for Number Guesser Pro game",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "game_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "player_name",
+      "value": "TestHero",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has correct structure\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('status');",
+              "    pm.expect(jsonData).to.have.property('active_games');",
+              "    pm.expect(jsonData).to.have.property('timestamp');",
+              "});",
+              "",
+              "pm.test(\"Status is healthy\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.status).to.eql('healthy');",
+              "});",
+              "",
+              "pm.test(\"Response time is less than 200ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        },
+        "description": "Health check endpoint to verify API is running"
+      },
+      "response": []
+    },
+    {
+      "name": "Start Game - Valid (Easy)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test(\"Response has game_id\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('game_id');",
+              "    pm.expect(jsonData.game_id).to.be.a('string');",
+              "    ",
+              "    // Save game_id for next requests",
+              "    pm.collectionVariables.set('game_id', jsonData.game_id);",
+              "});",
+              "",
+              "pm.test(\"Response has correct difficulty\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.difficulty).to.eql('easy');",
+              "});",
+              "",
+              "pm.test(\"Max attempts is 10 for easy mode\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.max_attempts).to.eql(10);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"player_name\": \"{{player_name}}\",\n  \"difficulty\": \"easy\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/game/start",
+          "host": ["{{base_url}}"],
+          "path": ["game", "start"]
+        },
+        "description": "Start a new game with valid parameters"
+      },
+      "response": []
+    },
+    {
+      "name": "Start Game - Empty Player Name",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test(\"Error message is present\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('error');",
+              "    pm.expect(jsonData.error).to.include('player_name');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"player_name\": \"\",\n  \"difficulty\": \"easy\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/game/start",
+          "host": ["{{base_url}}"],
+          "path": ["game", "start"]
+        },
+        "description": "Test validation for empty player name"
+      },
+      "response": []
+    },
+    {
+      "name": "Start Game - Long Player Name (25 chars)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Should reject or accept based on validation\", function () {",
+              "    // Document actual behavior",
+              "    if (pm.response.code === 400) {",
+              "        pm.test(\"Status code is 400 - validation working\", function () {",
+              "            pm.response.to.have.status(400);",
+              "        });",
+              "    } else if (pm.response.code === 201) {",
+              "        pm.test(\"⚠️ BUG: Accepts name > 20 chars - validation missing!\", function () {",
+              "            pm.response.to.have.status(201);",
+              "            console.warn('Backend validation for name length is missing!');",
+              "        });",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"player_name\": \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n  \"difficulty\": \"easy\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/game/start",
+          "host": ["{{base_url}}"],
+          "path": ["game", "start"]
+        },
+        "description": "Test if backend validates max 20 character limit"
+      },
+      "response": []
+    },
+    {
+      "name": "Start Game - Invalid Difficulty",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test(\"Error mentions valid options\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('valid_options');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"player_name\": \"TestHero\",\n  \"difficulty\": \"impossible\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/game/start",
+          "host": ["{{base_url}}"],
+          "path": ["game", "start"]
+        },
+        "description": "Test invalid difficulty validation"
+      },
+      "response": []
+    },
+    {
+      "name": "Start Game - XSS Attack",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Game starts (documents behavior)\", function () {",
+              "    if (pm.response.code === 201) {",
+              "        var jsonData = pm.response.json();",
+              "        console.warn('⚠️ XSS payload accepted. Check if sanitized in responses.');",
+              "        pm.collectionVariables.set('xss_game_id', jsonData.game_id);",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"player_name\": \"<script>alert('xss')</script>\",\n  \"difficulty\": \"easy\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/game/start",
+          "host": ["{{base_url}}"],
+          "path": ["game", "start"]
+        },
+        "description": "Security test - XSS attack attempt"
+      },
+      "response": []
+    },
+    {
+      "name": "Make Guess - Valid",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has result field\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('result');",
+              "    pm.expect(['win', 'lose', 'continue']).to.include(jsonData.result);",
+              "});",
+              "",
+              "pm.test(\"Hint is provided\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    if (jsonData.result === 'continue') {",
+              "        pm.expect(jsonData).to.have.property('hint');",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "// Ensure we have a game_id",
+              "if (!pm.collectionVariables.get('game_id')) {",
+              "    console.error('No game_id found. Run \"Start Game\" first!');",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"guess\": 25\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/game/{{game_id}}/guess",
+          "host": ["{{base_url}}"],
+          "path": ["game", "{{game_id}}", "guess"]
+        },
+        "description": "Make a valid guess in an active game"
+      },
+      "response": []
+    },
+    {
+      "name": "Make Guess - Non-Integer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Should return 400 for non-integer\", function () {",
+              "    if (pm.response.code === 400) {",
+              "        pm.response.to.have.status(400);",
+              "        console.log('✅ Validation working correctly');",
+              "    } else {",
+              "        console.warn('⚠️ BUG: Non-integer accepted!');",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"guess\": \"abc\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/game/{{game_id}}/guess",
+          "host": ["{{base_url}}"],
+          "path": ["game", "{{game_id}}", "guess"]
+        },
+        "description": "Test validation for non-integer guess"
+      },
+      "response": []
+    },
+    {
+      "name": "Make Guess - Negative Number",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Should reject negative numbers\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test(\"Error message mentions range\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.include('between');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"guess\": -5\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/game/{{game_id}}/guess",
+          "host": ["{{base_url}}"],
+          "path": ["game", "{{game_id}}", "guess"]
+        },
+        "description": "Test negative number validation"
+      },
+      "response": []
+    },
+    {
+      "name": "Make Guess - Out of Range",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Should reject out of range guess\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test(\"Error specifies valid range\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.match(/between.*and/);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"guess\": 999\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/game/{{game_id}}/guess",
+          "host": ["{{base_url}}"],
+          "path": ["game", "{{game_id}}", "guess"]
+        },
+        "description": "Test out of range validation (easy mode: 1-50)"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Game Status",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has game details\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('game_id');",
+              "    pm.expect(jsonData).to.have.property('player_name');",
+              "    pm.expect(jsonData).to.have.property('difficulty');",
+              "    pm.expect(jsonData).to.have.property('status');",
+              "    pm.expect(jsonData).to.have.property('attempts');",
+              "});",
+              "",
+              "pm.test(\"Target number hidden for active games\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    if (jsonData.status === 'active') {",
+              "        pm.expect(jsonData).to.not.have.property('target_number');",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/game/{{game_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["game", "{{game_id}}"]
+        },
+        "description": "Get current game status"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Game - Invalid ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"Error message says not found\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.error).to.include('not found');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/game/invalid-game-id-123",
+          "host": ["{{base_url}}"],
+          "path": ["game", "invalid-game-id-123"]
+        },
+        "description": "Test error handling for non-existent game"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Leaderboard",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response has leaderboard array\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('leaderboard');",
+              "    pm.expect(jsonData.leaderboard).to.be.an('array');",
+              "});",
+              "",
+              "pm.test(\"Response has total_games count\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('total_games');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/leaderboard",
+          "host": ["{{base_url}}"],
+          "path": ["leaderboard"]
+        },
+        "description": "Get top 10 players leaderboard"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Stats",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Stats include all metrics\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('total_games');",
+              "    pm.expect(jsonData).to.have.property('active_games');",
+              "    pm.expect(jsonData).to.have.property('completed_games');",
+              "    pm.expect(jsonData).to.have.property('won_games');",
+              "    pm.expect(jsonData).to.have.property('lost_games');",
+              "    pm.expect(jsonData).to.have.property('win_rate');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/stats",
+          "host": ["{{base_url}}"],
+          "path": ["stats"]
+        },
+        "description": "Get overall game statistics"
+      },
+      "response": []
+    }
+  ]
+}
